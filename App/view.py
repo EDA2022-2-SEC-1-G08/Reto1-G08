@@ -50,7 +50,7 @@ def printMenu():
     print("7- Encontrar contenido con un director involucrado")
     print("8- Listar el TOP (N) de los géneros con más contenido")
     print("9- Listar el TOP (N) de los actores con más participaciones en contenido")
-
+    print("0- Salir del Programa")
 def loadData(control):
     """
     Solicita al controlador que cargue los datos en el modelo
@@ -95,7 +95,7 @@ while True:
                 año_publicacion = str(titles["release_year"])
                 duracion = str(titles["duration"])
                 clasificacion = str(titles["rating"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+",")
+                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+")")
     
     elif int(inputs[0]) == 2:
         lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
@@ -147,7 +147,9 @@ while True:
     #    top_n_actores= controller.top_n_actores(n)
     # print(top_n_actores)
 
+    elif int(inputs[0]) == 0:
+        sys.exit(0)
 
     else:
-        sys.exit(0)
+        continue
 sys.exit(0)
