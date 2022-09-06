@@ -216,7 +216,9 @@ while True:
     # top_n_actores= controller.top_n_actores(n)
     # print(top_n_actores)
 
+    elif int(inputs[0]) == 0:
+        sys.exit(0)
 
     else:
-        sys.exit(0)
+        continue
 sys.exit(0)
