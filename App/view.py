@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+from unittest import result
 import config as cf
 import sys
 import controller
@@ -32,12 +33,52 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-def newController():
+def newController(dataStructure):
     """
     Se crea una instancia del controlador
     """
-    control = controller.newController()
+    control = controller.newController(dataStructure)
     return control
+sizeDatos = "p"
+def tamanoDeMuestra():
+    print("Selecciones el tamaño de la muestra")
+    print("1- small")
+    print("2- 5pct")
+    print("3- 10pct")
+    print("4- 20pct")
+    print("5- 30pct")
+    print("6- 50pct")
+    print("7- 80pct")
+    print("8- large")
+    tamano = input()
+    file = ""
+    if int(tamano) == 1:
+        file = "_titles-utf8-small.csv"
+        sizeDatos = "muestra pequeña"
+    elif int(tamano) == 2:
+        file = "_titles-utf8-5pct.csv"
+        sizeDatos = "5%"
+    elif int(tamano) == 3:
+        file = "_titles-utf8-10pct.csv"
+        sizeDatos = "10%"
+    elif int(tamano) == 4:
+        file = "_titles-utf8-20pct.csv"
+        sizeDatos = "20%"
+    elif int(tamano) == 5:
+        file = "_titles-utf8-30pct.csv"
+        sizeDatos = "30%"
+    elif int(tamano) == 6:
+        file = "_titles-utf8-50pct.csv"
+        sizeDatos = "50%"
+    elif int(tamano) == 7:
+        file = "_titles-utf8-80pct.csv"
+        sizeDatos = "80%"
+    elif int(tamano) == 8:
+        file = "_titles-utf8-large.csv"
+        sizeDatos = "muestra grande"
+    else:
+        print("Opción no valida")
+    return file, sizeDatos
 
 def printMenu():
     print("Bienvenido")
@@ -49,16 +90,18 @@ def printMenu():
     print("6- Encontrar contenido producido en un país")
     print("7- Encontrar contenido con un director involucrado")
     print("8- Listar el TOP (N) de los géneros con más contenido")
-    print("9- Listar el TOP (N) de los actores con más participaciones en contenido")
+    #print("9- Listar el TOP (N) de los actores con más participaciones en contenido")
+    print("9- Ordenar por fecha de lanzamiento")
+    print("10- Elegír la estructura de datos")
 
-def loadData(control):
+def loadData(control, file):
     """
     Solicita al controlador que cargue los datos en el modelo
     """
-    amazon_prime, disney_plus, hulu, netflix = controller.loadData(control)
+    amazon_prime, disney_plus, hulu, netflix = controller.loadData(control, file)
     return amazon_prime, disney_plus, hulu, netflix
 
-control = newController()
+control = newController("ARRAY_LIST")
 
 """
 Menu principal
@@ -66,9 +109,16 @@ Menu principal
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
+    if int(inputs) == 1:
+        
+        file = tamanoDeMuestra()
+        sizeDatos = file[1]
+        file = file[0]
+
+
         print("Cargando información de los archivos ....")
-        amazon_prime, disney_plus, hulu, netflix = loadData(control)
+        print(control["model"]["hulu"]["type"])
+        amazon_prime, disney_plus, hulu, netflix = loadData(control, file)
         nombre_servicios_streaming = [("Amazon Prime", amazon_prime),
                                      ("Disney Plus", disney_plus),
                                      ("Hulu", hulu),
@@ -95,7 +145,7 @@ while True:
                 año_publicacion = str(titles["release_year"])
                 duracion = str(titles["duration"])
                 clasificacion = str(titles["rating"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+",")
+                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+")")
     
     elif int(inputs[0]) == 2:
         lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
@@ -141,10 +191,29 @@ while True:
     #    top_n_generos= controller.top_n_generos(n)
     # print(top_n_generos)
 
+    # elif int(inputs[0]) == 9:
+    #     n= int(input("introduzca el n top de actores que desea consultar"))
+    #     print("Buscando ....")
     elif int(inputs[0]) == 9:
-        n= int(input("introduzca el n top de actores que desea consultar"))
-        print("Buscando ....")
-    #    top_n_actores= controller.top_n_actores(n)
+        print("Eliga el algoritmo de ordenamiento")
+        print("1- Selection Sort")
+        print("2- Insertion Sort")
+        print("3- Shell Sort ")
+        sort = input()
+        time = controller.sortTitles(control, sort)
+        time = f"{time[1]:.3f}"
+        print("Para ordenar "+ sizeDatos + " de todos los datos se demoró ", str(time))
+
+    elif int(inputs) == 10:
+        print("Eliga en qué tipo de estructura de datos desea cargar los datos")
+        print("1- Lista encadenada")
+        print("2- Array")
+        dataStructure = input()
+        if int(dataStructure) == 1:
+            control = newController("SINGLE_LINKED")
+        elif int(dataStructure) == 2:
+            control = newController("ARRAY_LIST")
+    # top_n_actores= controller.top_n_actores(n)
     # print(top_n_actores)
 
 

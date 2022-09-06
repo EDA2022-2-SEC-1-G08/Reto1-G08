@@ -26,8 +26,11 @@
 
 
 import config as cf
+import time
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import selectionsort as ss
+from DISClib.Algorithms.Sorting import insertionsort as si
 assert cf
 
 """
@@ -36,16 +39,16 @@ los mismos.
 """
 
 # Construccion de modelos
-def newCatalog():
+def newCatalog(dataStructure):
     ss_catalog = {'amazon_prime': None,
                'disney_plus': None,
                'hulu': None,
                'netflix': None}
 
-    ss_catalog['amazon_prime'] = lt.newList('SINGLE_LINKED')
-    ss_catalog['disney_plus'] = lt.newList('SINGLE_LINKED')
-    ss_catalog['hulu'] =lt.newList('SINGLE_LINKED')
-    ss_catalog['netflix'] = lt.newList('SINGLE_LINKED')
+    ss_catalog['amazon_prime'] = lt.newList(dataStructure)
+    ss_catalog['disney_plus'] = lt.newList(dataStructure)
+    ss_catalog['hulu'] =lt.newList(dataStructure)
+    ss_catalog['netflix'] = lt.newList(dataStructure)
 
     return ss_catalog
 
@@ -83,4 +86,51 @@ def comparecontents(content1, content):
         return 1
     return -1
 
+# Funciones de comparación
+def cmpMoviesByReleaseYear(movie1, movie2):
+    """
+    Devuelve verdadero (True) si el release_year de movie1 son menores que los
+    de movie2, en caso de que sean iguales tenga en cuenta el titulo y en caso de que
+    ambos criterios sean iguales tenga en cuenta la duración, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'release_year', ‘title’ y ‘duration’
+    movie2: informacion de la segunda pelicula que incluye su valor 'release_year', ‘title’ y ‘duration’
+    """
+    if movie1["release_year"] < movie2["release_year"]:
+        return True
+    elif movie1["release_year"] == movie2["release_year"]:
+        if movie1["title"] < movie2["title"]:
+            return True
+        elif movie1["duration"]<movie2["duration"]:
+            return True
+        else:
+            return False
+    else:
+        return False
+        
 # Funciones de ordenamiento
+def sortTitles(catalog, sort):
+    times = []
+    start_time = getTime()
+    if int(sort) == 1:
+        result = ss.sort(catalog["amazon_prime"],cmpMoviesByReleaseYear)
+        result = ss.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
+        result = ss.sort(catalog["hulu"],cmpMoviesByReleaseYear)
+        result = ss.sort(catalog["netflix"],cmpMoviesByReleaseYear)
+    elif int(sort) == 2:
+        result = si.sort(catalog["amazon_prime"],cmpMoviesByReleaseYear)
+        result = si.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
+        result = si.sort(catalog["hulu"],cmpMoviesByReleaseYear)
+        result = si.sort(catalog["netflix"],cmpMoviesByReleaseYear)
+    elif int(sort) == 3:
+        result = sa.sort(catalog["amazon_prime"],cmpMoviesByReleaseYear)
+        result = sa.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
+        result = sa.sort(catalog["hulu"],cmpMoviesByReleaseYear)
+        result = sa.sort(catalog["netflix"],cmpMoviesByReleaseYear)
+    end_time = getTime()
+    deltaTime = float(end_time - start_time)
+    return result, deltaTime
+
+def getTime():
+    return float(time.perf_counter()*1000)
