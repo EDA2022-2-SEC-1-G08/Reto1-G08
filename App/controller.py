@@ -68,7 +68,7 @@ def loadTitles(ss_catalog, ss_name):
         model.addTitle(ss_catalog, ss_name, title_inf)
     
     ss_name_catalog = ss_catalog[ss_name]
-    return model.contentSize(ss_name_catalog), model.first_three_titles(ss_name_catalog), model.last_three_titles(ss_name_catalog)
+    return model.contentSize(ss_name_catalog), model.first_three_titles(ss_name_catalog),model.last_three_titles(ss_name_catalog)
 
 # Funciones de ordenamiento
 

@@ -81,22 +81,22 @@ while True:
             print(name_servicio+": ")
             print("Total de Contenido Registrado: "+str(tot_cont))
             print("Primeros 3 Contenidos Registrados (Año Publicación, Duración y Clasificación): ")
-            for titles in first_three:
-                name = str(titles["nombre"])
-                año_publicacion = str(titles["año de publicación"])
-                duracion = str(titles["duración"])
-                clasificacion = str(titles["clasificación"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion)
+            for titles in lt.iterator(first_three):
+                name = str(titles["title"])
+                año_publicacion = str(titles["release_year"])
+                duracion = str(titles["duration"])
+                clasificacion = str(titles["rating"])
+                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+")")
 
             print("Ultimos 3 Contenidos Registrados (Año Publicación, Duración y Clasificación): ")
-            for titles in last_three:
-                name = str(titles["nombre"])
-                año_publicacion = str(titles["año de publicación"])
-                duracion = str(titles["duración"])
-                clasificacion = str(titles["clasificación"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion)
-
-
+            
+            for titles in lt.iterator(last_three):
+                name = str(titles["title"])
+                año_publicacion = str(titles["release_year"])
+                duracion = str(titles["duration"])
+                clasificacion = str(titles["rating"])
+                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+",")
+    
     elif int(inputs[0]) == 2:
         lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
         lim_sup= int(input("introduzca el limite superior para el que quiere buscar las peliculas: "))
