@@ -31,6 +31,8 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import selectionsort as ss
 from DISClib.Algorithms.Sorting import insertionsort as si
+from DISClib.Algorithms.Sorting import mergesort as sm
+from DISClib.Algorithms.Sorting import quicksort as sq
 assert cf
 
 """
@@ -128,6 +130,16 @@ def sortTitles(catalog, sort):
         result = sa.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
         result = sa.sort(catalog["hulu"],cmpMoviesByReleaseYear)
         result = sa.sort(catalog["netflix"],cmpMoviesByReleaseYear)
+    elif int(sort) == 4:
+        result = sq.sort(catalog["amazon_prime"],cmpMoviesByReleaseYear)
+        result = sq.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
+        result = sq.sort(catalog["hulu"],cmpMoviesByReleaseYear)
+        result = sq.sort(catalog["netflix"],cmpMoviesByReleaseYear)
+    elif int(sort) == 5:
+        result = sm.sort(catalog["amazon_prime"],cmpMoviesByReleaseYear)
+        result = sm.sort(catalog["disney_plus"],cmpMoviesByReleaseYear)
+        result = sm.sort(catalog["hulu"],cmpMoviesByReleaseYear)
+        result = sm.sort(catalog["netflix"],cmpMoviesByReleaseYear)
     end_time = getTime()
     deltaTime = float(end_time - start_time)
     return result, deltaTime

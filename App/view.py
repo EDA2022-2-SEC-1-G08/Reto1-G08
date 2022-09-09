@@ -26,6 +26,8 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 
+default_limit = 1000
+sys.setrecursionlimit(default_limit*100)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -183,7 +185,7 @@ while True:
         director= input("introduzca el director a consultar")
         print("Buscando ....")
     #    contenido_x_director= controller.contenido_x_director(director)
-    # print(contenido_x_director)
+    # print(contenido_x_director)1
 
     elif int(inputs[0]) == 8:
         n= int(input("ingrese el numero n de top generos que quiere buscar"))
@@ -199,6 +201,9 @@ while True:
         print("1- Selection Sort")
         print("2- Insertion Sort")
         print("3- Shell Sort ")
+        print("4- Quick Sort")
+        print("5- Merge Sort")
+
         sort = input()
         time = controller.sortTitles(control, sort)
         time = f"{time[1]:.3f}"

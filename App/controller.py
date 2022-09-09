@@ -47,6 +47,7 @@ def loadData(control, file):
     estructura de datos
     """
     ss_catalog = control['model']
+    
 
     amazon_prime = loadTitles(ss_catalog, 'amazon_prime', file)
     disney_plus = loadTitles(ss_catalog, "disney_plus", file)
