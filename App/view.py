@@ -82,6 +82,8 @@ def tamanoDeMuestra():
         print("Opción no valida")
     return file, sizeDatos
 
+
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
@@ -103,7 +105,18 @@ def loadData(control, file):
     amazon_prime, disney_plus, hulu, netflix = controller.loadData(control, file)
     return amazon_prime, disney_plus, hulu, netflix
 
+def dataStructure(dt:int):
+    if dt == 1:
+        tad = "SINGLE_LINKED"
+    elif dt == 2:
+        tad = "ARRAY_LIST"
+    return tad
+
 control = newController("ARRAY_LIST")
+dt = 1
+
+
+
 
 """
 Menu principal
@@ -112,7 +125,8 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs) == 1:
-        
+        tad = dataStructure(dt)
+        control = newController(tad)
         file = tamanoDeMuestra()
         sizeDatos = file[1]
         file = file[0]
@@ -213,11 +227,8 @@ while True:
         print("Eliga en qué tipo de estructura de datos desea cargar los datos")
         print("1- Lista encadenada")
         print("2- Array")
-        dataStructure = input()
-        if int(dataStructure) == 1:
-            control = newController("SINGLE_LINKED")
-        elif int(dataStructure) == 2:
-            control = newController("ARRAY_LIST")
+        dt = int(input())
+        
     # top_n_actores= controller.top_n_actores(n)
     # print(top_n_actores)
 
