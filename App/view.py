@@ -113,7 +113,7 @@ def dataStructure(dt:int):
     return tad
 
 control = newController("ARRAY_LIST")
-dt = 1
+dt = 2
 
 
 
