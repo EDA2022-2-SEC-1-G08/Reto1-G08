@@ -119,7 +119,32 @@ control = newController("ARRAY_LIST")
 dt = 2
 
 
-
+def printRegistrosRangoFechas(registros):
+    n_registros, primeros, ultimos = registros
+    info = {"Tipo": [], "Año": [], "Nombre": [], "Duración": [], "Servicio": [], "Director": [], "Actores": []}
+    if lt.size(primeros):
+        print("Número de películas encontrados que cumplen la condición: ", n_registros)
+        print("Tabla de los primeros 3 y ultimos 3 registros encontrados entre las fechas indicadas")
+        for registro in lt.iterator(primeros):
+            info["Nombre"].append(registro["title"])
+            info["Año"].append(registro["release_year"])
+            info["Tipo"].append(registro["type"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+        for registro in lt.iterator(ultimos):
+            info["Nombre"].append(registro["title"])
+            info["Año"].append(registro["release_year"])
+            info["Tipo"].append(registro["type"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+        titulos = ["Tipo", "Año", "Nombre", "Duración", "Plataforma", "Director", "Actores"]
+        print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=30))
+    else:
+        print("No se encontraron registro en el rango de fechas indicado")
 
 """
 Menu principal
@@ -188,8 +213,8 @@ while True:
         lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
         lim_sup= int(input("introduzca el limite superior para el que quiere buscar las peliculas: "))
         print("Buscando ....")
-    #    peliculas= controller.listar_peliculas_estrenadas_en un periodo(lim_inf,lim_sup)
-    #    print(peliculas)
+        peliculas = controller.listar_peliculas_estrenadas_en_un_periodo(control, lim_inf, lim_sup)
+        printRegistrosRangoFechas(peliculas)
 
     elif int(inputs[0]) == 3:
         fecha_inicial= input("introduzca la fecha inicial, con formato: %B %d, %Y : ")

@@ -49,24 +49,22 @@ def loadData(control, file):
     ss_catalog = control['model']
     
 
-    amazon_prime = loadTitles(ss_catalog, 'amazon_prime', file)
-    disney_plus = loadTitles(ss_catalog, "disney_plus", file)
-    hulu = loadTitles(ss_catalog, "hulu", file)
-    netflix = loadTitles(ss_catalog, "netflix", file)
+    amazon_prime = loadTitles(ss_catalog, 'amazon_prime', file, "Amazon Prime")
+    disney_plus = loadTitles(ss_catalog, "disney_plus", file, "Disney Plus")
+    hulu = loadTitles(ss_catalog, "hulu", file, "Hulu")
+    netflix = loadTitles(ss_catalog, "netflix", file, "Netflix")
     
     return amazon_prime, disney_plus, hulu, netflix
 
-def loadTitles(ss_catalog, ss_name, file):
+def loadTitles(ss_catalog, ss_name, file, empresa):
     """
-    Carga los libros del archivo.  Por cada libro se toman sus autores y por
-    cada uno de ellos, se crea en la lista de autores, a dicho autor y una
-    referencia al libro que se esta procesando.
+    Carga los contenidos del archivo.
     """
     file_direc = "Challenge-1/"+ss_name+file
     titlesfile = cf.data_dir + file_direc
     input_file = csv.DictReader(open(titlesfile, encoding='utf-8'))
     for title_inf in input_file:
-        model.addTitle(ss_catalog, ss_name, title_inf)
+        model.addTitle(ss_catalog, ss_name, title_inf, empresa)
     
     ss_name_catalog = ss_catalog[ss_name]
     return model.contentSize(ss_name_catalog), model.first_three_titles(ss_name_catalog),model.last_three_titles(ss_name_catalog)
@@ -75,3 +73,8 @@ def loadTitles(ss_catalog, ss_name, file):
 def sortTitles(control, sort):
     return model.sortTitles(control["model"], sort)
 # Funciones de consulta sobre el catálogo
+def listar_peliculas_estrenadas_en_un_periodo(control, lim_inf, lim_sup):
+    ss_catalog = control["model"]
+    peliculas = model.listar_peliculas_estrenadas_en_un_periodo(ss_catalog, lim_inf, lim_sup)
+
+    return model.contentSize(peliculas), model.first_three_titles(peliculas), model.last_three_titles(peliculas)

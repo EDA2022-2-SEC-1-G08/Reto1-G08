@@ -25,6 +25,7 @@
  """
 
 
+from turtle import title
 import config as cf
 import time
 from DISClib.ADT import list as lt
@@ -55,16 +56,43 @@ def newCatalog(dataStructure):
     return ss_catalog
 
 # Funciones para agregar informacion al catalogo
-def addTitle(ss_catalog, ss_name, title_inf):
+def addTitle(ss_catalog, ss_name, title_inf, empresa):
     pelicula = {}
+    pelicula["id"] = title_inf["show_id"]
+    pelicula["type"] = title_inf["type"]
     pelicula["title"] = title_inf["title"]
+    pelicula["director"] = title_inf["director"]
+    pelicula["cast"] = title_inf["cast"]
+    pelicula["país"] = title_inf["country"]
+    pelicula["fecha_adicion"] = title_inf["date_added"]
     pelicula["release_year"] = title_inf["release_year"]
     pelicula["rating"] = title_inf["rating"]
     pelicula["duration"] = title_inf["duration"]
+    pelicula["descripcion"] = title_inf["description"]
+    pelicula["empresa"] = empresa
+
     lt.addLast(ss_catalog[ss_name], pelicula)
     return ss_catalog
 
 # Funciones para creacion de datos
+def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+    peliculas = lt.newList()
+    for servicio in empresas:
+        for i in range(contentSize(servicio)):
+            registro = lt.getElement(servicio, i)
+            type = registro["type"]
+            if type == "Movie":
+                year = int(registro["release_year"])
+                if year >= lim_inf and year <= lim_sup:
+                    lt.addLast(peliculas, registro)
+    sm.sort(peliculas, cmpMoviesByReleaseYear)
+    return peliculas
+
 
 # Funciones de consulta
 # ss_name_catalog == ss_catalog[ss_name] = ss_catalog["amazon_prime" o "disney_plus" etc]
