@@ -19,11 +19,14 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+from email import header
 from unittest import result
+from wsgiref import headers
 import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from tabulate import tabulate
 assert cf
 
 default_limit = 1000
@@ -133,35 +136,53 @@ while True:
 
 
         print("Cargando información de los archivos ....")
+        print("Estructura de Datos Utilizada")
         print(control["model"]["hulu"]["type"])
+        print()
         amazon_prime, disney_plus, hulu, netflix = loadData(control, file)
         nombre_servicios_streaming = [("Amazon Prime", amazon_prime),
                                      ("Disney Plus", disney_plus),
                                      ("Hulu", hulu),
                                      ("Netflix",netflix)]
-
+        rslt = {"Servicio": [], "N-Registros": [] }
+        f_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
+        l_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
         for servicios in nombre_servicios_streaming:
             name_servicio, inf_servicio = servicios
             tot_cont, first_three, last_three = inf_servicio
 
-            print(name_servicio+": ")
-            print("Total de Contenido Registrado: "+str(tot_cont))
-            print("Primeros 3 Contenidos Registrados (Año Publicación, Duración y Clasificación): ")
+            rslt["Servicio"].append(name_servicio)
+            rslt["N-Registros"].append(str(tot_cont))
             for titles in lt.iterator(first_three):
                 name = str(titles["title"])
                 año_publicacion = str(titles["release_year"])
                 duracion = str(titles["duration"])
                 clasificacion = str(titles["rating"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+")")
-
-            print("Ultimos 3 Contenidos Registrados (Año Publicación, Duración y Clasificación): ")
+                f_three["Servicio"].append(name_servicio)
+                f_three["Nombre"].append(name)
+                f_three["Año"].append(año_publicacion)
+                f_three["Duracion"].append(duracion)
+                f_three["Clasificacion"].append(clasificacion)
             
             for titles in lt.iterator(last_three):
                 name = str(titles["title"])
                 año_publicacion = str(titles["release_year"])
                 duracion = str(titles["duration"])
                 clasificacion = str(titles["rating"])
-                print(name+" ("+año_publicacion+", "+duracion+", "+clasificacion+")")
+
+                l_three["Servicio"].append(name_servicio)
+                l_three["Nombre"].append(name)
+                l_three["Año"].append(año_publicacion)
+                l_three["Duracion"].append(duracion)
+                l_three["Clasificacion"].append(clasificacion)
+
+        header_titles = ["Servicio", "Titulo", "Año de Lanzamiento", "Duración", "Clasificación"]
+        print(tabulate(rslt, headers=["Servicio", "No. de registros cargados"]))
+        print("\nPrimeros 3 registros\n")
+        print(tabulate(f_three, headers=header_titles, tablefmt="grid"))
+        print("\nÚltimos 3 registros\n")
+        print(tabulate(l_three, headers=header_titles, tablefmt="grid"))
+        
     
     elif int(inputs[0]) == 2:
         lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
