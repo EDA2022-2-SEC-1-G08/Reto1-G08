@@ -104,11 +104,11 @@ def printMenu():
     print("9- Ordenar por fecha de lanzamiento")
     print("10- Elegír la estructura de datos")
 
-def loadData(control, file):
+def loadData(control, file, ordenar):
     """
     Solicita al controlador que cargue los datos en el modelo
     """
-    amazon_prime, disney_plus, hulu, netflix = controller.loadData(control, file)
+    amazon_prime, disney_plus, hulu, netflix = controller.loadData(control, file, ordenar)
     return amazon_prime, disney_plus, hulu, netflix
 
 def dataStructure(dt:int):
@@ -183,18 +183,24 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs) == 1:
+        
         tad = dataStructure(dt)
         control = newController(tad)
         file = tamanoDeMuestra()
         sizeDatos = file[1]
         file = file[0]
 
+        ordenar = 2
+        print("¿Desea que los datos sean ordenados por fecha de lanzamiento?")
+        print("1- Sí")
+        print("2- No")
+        ordenar = input()
 
         print("Cargando información de los archivos ....")
         print("Estructura de Datos Utilizada")
         print(control["model"]["hulu"]["type"])
         print()
-        amazon_prime, disney_plus, hulu, netflix = loadData(control, file)
+        amazon_prime, disney_plus, hulu, netflix = loadData(control, file, ordenar)
         nombre_servicios_streaming = [("Amazon Prime", amazon_prime),
                                      ("Disney Plus", disney_plus),
                                      ("Hulu", hulu),

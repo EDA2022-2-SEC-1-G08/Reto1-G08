@@ -57,7 +57,7 @@ def newCatalog(dataStructure):
     return ss_catalog
 
 # Funciones para agregar informacion al catalogo
-def addTitle(ss_catalog, ss_name, title_inf, empresa):
+def addTitle(ss_catalog, ss_name, title_inf, empresa, ordenar):
     pelicula = {}
     pelicula["id"] = title_inf["show_id"]
     pelicula["type"] = title_inf["type"]
@@ -73,6 +73,9 @@ def addTitle(ss_catalog, ss_name, title_inf, empresa):
     pelicula["empresa"] = empresa
 
     lt.addLast(ss_catalog[ss_name], pelicula)
+    if ordenar[0] == "1":
+        sm.sort(ss_catalog[ss_name], cmpContentByReleaseYear)
+
     return ss_catalog
 
 # Funciones para creacion de datos
@@ -207,7 +210,7 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     if movie1["release_year"] < movie2["release_year"]:
         return True
     elif movie1["release_year"] == movie2["release_year"]:
-        if movie1["title"] > movie2["title"]:
+        if movie1["title"] < movie2["title"]:
             return True
         elif movie1["title"] == movie2["title"]:
             if movie1["duration"]<movie2["duration"]:
@@ -219,6 +222,24 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     else:
         return False
         
+def cmpContentByReleaseYear(movie1, movie2):
+    """
+    Devuelve verdadero (True) si el release_year de movie1 son menores que los
+    de movie2, en caso de que sean iguales tenga en cuenta el titulo, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'release_year' y ‘title’
+    movie2: informacion de la segunda pelicula que incluye su valor 'release_year' y ‘title’
+    """
+    if movie1["release_year"] < movie2["release_year"]:
+        return True
+    elif movie1["release_year"] == movie2["release_year"]:
+        if movie1["title"] < movie2["title"]:
+            return True
+        else:
+            return False
+    else:
+        return False
 # Funciones de ordenamiento
 def sortTitles(catalog, sort):
     times = []

@@ -41,7 +41,7 @@ def newController(dataStructure):
     return control
 
 # Funciones para la carga de datos
-def loadData(control, file):
+def loadData(control, file, ordenar):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
@@ -49,14 +49,14 @@ def loadData(control, file):
     ss_catalog = control['model']
     
 
-    amazon_prime = loadTitles(ss_catalog, 'amazon_prime', file, "Amazon Prime")
-    disney_plus = loadTitles(ss_catalog, "disney_plus", file, "Disney Plus")
-    hulu = loadTitles(ss_catalog, "hulu", file, "Hulu")
-    netflix = loadTitles(ss_catalog, "netflix", file, "Netflix")
+    amazon_prime = loadTitles(ss_catalog, 'amazon_prime', file, "Amazon Prime", ordenar)
+    disney_plus = loadTitles(ss_catalog, "disney_plus", file, "Disney Plus", ordenar)
+    hulu = loadTitles(ss_catalog, "hulu", file, "Hulu", ordenar)
+    netflix = loadTitles(ss_catalog, "netflix", file, "Netflix", ordenar)
     
     return amazon_prime, disney_plus, hulu, netflix
 
-def loadTitles(ss_catalog, ss_name, file, empresa):
+def loadTitles(ss_catalog, ss_name, file, empresa, ordenar):
     """
     Carga los contenidos del archivo.
     """
@@ -64,7 +64,7 @@ def loadTitles(ss_catalog, ss_name, file, empresa):
     titlesfile = cf.data_dir + file_direc
     input_file = csv.DictReader(open(titlesfile, encoding='utf-8'))
     for title_inf in input_file:
-        model.addTitle(ss_catalog, ss_name, title_inf, empresa)
+        model.addTitle(ss_catalog, ss_name, title_inf, empresa, ordenar)
     
     ss_name_catalog = ss_catalog[ss_name]
     return model.contentSize(ss_name_catalog), model.first_three_titles(ss_name_catalog),model.last_three_titles(ss_name_catalog)
