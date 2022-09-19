@@ -137,6 +137,33 @@ def comparecontents(content1, content):
     return -1
 
 # Funciones de comparación
+def cmpContentByTitle(content1, content2):
+    """
+    Devuelve verdadero (True) si el title de movie1 es menor que los
+    de movie2, en caso de que sean iguales tenga en cuenta el año de lanzamiento y en caso de que
+    ambos criterios sean iguales tenga en cuenta el nombre del director, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'title', ‘release_year’ y ‘director’
+    movie2: informacion de la segunda pelicula que incluye su valor 'title', ‘release_year’ y ‘director’
+    """
+    if content1["title"] < content2["title"]:
+        return True
+    elif content1["title"] == content2["title"]:
+        if content1["release_year"] < content2["release_year"]:
+            return True
+        elif content1["release_year"] == content2["release_year"]:
+            if content1["duration"]<content2["duration"]:
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
+
 def cmpProgramsByDateAdded(movie1, movie2):
     """
     Devuelve verdadero (True) si el date_added de movie1 es mayor que los
@@ -157,8 +184,11 @@ def cmpProgramsByDateAdded(movie1, movie2):
     elif fecha1 == fecha2:
         if movie1["title"] > movie2["title"]:
             return True
-        elif movie1["duration"] > movie2["duration"]:
-            return True
+        elif movie1["title"] == movie2["title"]:
+            if movie1["duration"] > movie2["duration"]:
+                return True
+            else:
+                return False
         else:
             return False
     else:
@@ -177,10 +207,13 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     if movie1["release_year"] < movie2["release_year"]:
         return True
     elif movie1["release_year"] == movie2["release_year"]:
-        if movie1["title"] < movie2["title"]:
+        if movie1["title"] > movie2["title"]:
             return True
-        elif movie1["duration"]<movie2["duration"]:
-            return True
+        elif movie1["title"] == movie2["title"]:
+            if movie1["duration"]<movie2["duration"]:
+                return True
+            else:
+                return False
         else:
             return False
     else:
