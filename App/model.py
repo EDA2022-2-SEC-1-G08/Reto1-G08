@@ -69,6 +69,7 @@ def addTitle(ss_catalog, ss_name, title_inf, empresa, ordenar):
     pelicula["release_year"] = title_inf["release_year"]
     pelicula["rating"] = title_inf["rating"]
     pelicula["duration"] = title_inf["duration"]
+    pelicula["genero"] = title_inf["listed_in"]
     pelicula["descripcion"] = title_inf["description"]
     pelicula["empresa"] = empresa
 
@@ -80,6 +81,33 @@ def addTitle(ss_catalog, ss_name, title_inf, empresa, ordenar):
 
 # Funciones para creacion de datos
 # Funciones de consulta
+def encontrar_contenido_x_genero(catalog, genero):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+    contenido = lt.newList()
+    cont_movies = 0
+    cont_TV = 0
+    for servicio in empresas:
+        for i in range(contentSize(servicio)):
+            registro = lt.getElement(servicio, i)
+            type = registro["type"]
+            generos = registro["genero"]
+            generos = generos.split(sep=", ")
+            if type == "TV Show":
+                if genero in generos:
+                    lt.addLast(contenido, registro)
+                    cont_TV += 1
+            elif type == "Movie":
+                if genero in generos:
+                    lt.addLast(contenido, registro)
+                    cont_movies += 1
+
+    sm.sort(contenido, cmpContentByTitle)
+    return contenido, cont_movies, cont_TV
+
 def listar_programas_agregados_en_un_periodo(catalog, fecha_inicial,fecha_final):
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]

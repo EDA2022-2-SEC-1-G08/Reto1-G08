@@ -176,6 +176,49 @@ def printProgramasTVRangoFechas(programas):
         print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=30))
     else:
         print("No se encontraron registro en el rango de fechas indicado")
+
+def printContenidoPorGenero(contenido_genero):
+    n_registros, n_peliculas, n_programas, primeros, ultimos = contenido_genero
+    info = {
+            "Nombre": [], 
+            "Año": [],
+            "Director": [],
+            "Servicio": [],
+            "Duración": [],
+            "Actores": [],
+            "País": [],
+            "Genero": [],
+            "Descripción": [] 
+            }
+    cantidad = {"Total": [n_registros], "N_Peliculas": [n_peliculas], "N_programas":[n_programas]}
+    print(tabulate(cantidad, headers=["Total de Registros", "Numero de Películas", "Número de Programas de TV"], tablefmt="grid"))
+    if lt.size(primeros):
+        print("Número de películas encontrados que cumplen la condición: ", n_registros)
+        print("Tabla de los primeros 3 y ultimos 3 registros encontrados entre las fechas indicadas")
+        for registro in lt.iterator(primeros):
+            info["Nombre"].append(registro["title"])
+            info["Descripción"].append(registro["descripcion"])
+            info["Año"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+        for registro in lt.iterator(ultimos):
+            info["Nombre"].append(registro["title"])
+            info["Descripción"].append(registro["descripcion"])
+            info["Año"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+        titulos = ["Nombre", "Año", "Director", "Plataforma", "Duración", "Actores", "País", "Genero", "Descripción"]
+        print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
+    else:
+        print("No se encontraron registro en el rango de fechas indicado")
 """
 Menu principal
 """
@@ -206,7 +249,7 @@ while True:
                                      ("Hulu", hulu),
                                      ("Netflix",netflix)]
         rslt = {"Servicio": [], "N-Registros": [] }
-        f_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": [], "Fecha": []}
+        f_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
         l_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
         for servicios in nombre_servicios_streaming:
             name_servicio, inf_servicio = servicios
@@ -224,7 +267,6 @@ while True:
                 f_three["Año"].append(año_publicacion)
                 f_three["Duracion"].append(duracion)
                 f_three["Clasificacion"].append(clasificacion)
-                f_three["Fecha"].append(str(titles["fecha_adicion"]))
             
             for titles in lt.iterator(last_three):
                 name = str(titles["title"])
@@ -238,7 +280,7 @@ while True:
                 l_three["Duracion"].append(duracion)
                 l_three["Clasificacion"].append(clasificacion)
 
-        header_titles = ["Servicio", "Titulo", "Año de Lanzamiento", "Duración", "Clasificación", "F"]
+        header_titles = ["Servicio", "Titulo", "Año de Lanzamiento", "Duración", "Clasificación"]
         print(tabulate(rslt, headers=["Servicio", "No. de registros cargados"]))
         print("\nPrimeros 3 registros\n")
         print(tabulate(f_three, headers=header_titles, tablefmt="grid"))
@@ -256,9 +298,6 @@ while True:
     elif int(inputs[0]) == 3:
         fecha_inicial= input("Introduzca la fecha inicial, con formato: %B %d, %Y : ")
         fecha_final= input("Introduzca la fecha final, con formato: %B %d, %Y : ")
-        #print(datetime.strptime(fecha_inicial, "%B %d, %Y"))
-        #print(datetime.strptime(fecha_final, "%Y-%m-%d"))
-        #print(datetime.strptime(fecha_inicial, "%B %d, %Y")>datetime.strptime(fecha_final, "%Y-%m-%d"))
         print("Buscando....")
         programas = controller.listar_programas_agregados_en_un_periodo(control, fecha_inicial,fecha_final)
         printProgramasTVRangoFechas(programas)
@@ -272,8 +311,8 @@ while True:
     elif int(inputs[0]) == 5:
         genero= input("introduzca el genero que desea buscar: ")
         print("Buscando ....")
-    #    contenido_genero= controller.encontrar_contenido_x_genero(genero)
-    # print(contenido_genero)
+        contenido_genero= controller.encontrar_contenido_x_genero(control, genero)
+        printContenidoPorGenero(contenido_genero)
 
     elif int(inputs[0]) == 6:
         pais= input("introduzca el pais a consultar: ")
