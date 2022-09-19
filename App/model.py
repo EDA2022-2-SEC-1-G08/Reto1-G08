@@ -25,6 +25,7 @@
  """
 
 
+from datetime import datetime
 from turtle import title
 import config as cf
 import time
@@ -75,6 +76,29 @@ def addTitle(ss_catalog, ss_name, title_inf, empresa):
     return ss_catalog
 
 # Funciones para creacion de datos
+# Funciones de consulta
+def listar_programas_agregados_en_un_periodo(catalog, fecha_inicial,fecha_final):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+    peliculas = lt.newList()
+    fecha_inicial = datetime.strptime(fecha_inicial, "%B %d, %Y")
+    fecha_final = datetime.strptime(fecha_final, "%B %d, %Y") 
+    for servicio in empresas:
+        for i in range(contentSize(servicio)):
+            registro = lt.getElement(servicio, i)
+            type = registro["type"]
+            if type == "TV Show":
+                fecha = registro["fecha_adicion"]
+                if fecha != "":
+                    fecha = datetime.strptime(fecha, "%Y-%m-%d")
+                    if fecha >= fecha_inicial and fecha <= fecha_final:
+                        lt.addLast(peliculas, registro)
+    sm.sort(peliculas, cmpProgramsByDateAdded)
+    return peliculas
+
 def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]
@@ -92,10 +116,6 @@ def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
                     lt.addLast(peliculas, registro)
     sm.sort(peliculas, cmpMoviesByReleaseYear)
     return peliculas
-
-
-# Funciones de consulta
-# ss_name_catalog == ss_catalog[ss_name] = ss_catalog["amazon_prime" o "disney_plus" etc]
 
 def contentSize(ss_name_catalog):
     return lt.size(ss_name_catalog)
@@ -117,6 +137,33 @@ def comparecontents(content1, content):
     return -1
 
 # Funciones de comparación
+def cmpProgramsByDateAdded(movie1, movie2):
+    """
+    Devuelve verdadero (True) si el date_added de movie1 es mayor que los
+    de movie2, en caso de que sean iguales tenga en cuenta el titulo y en caso de que
+    ambos criterios sean iguales tenga en cuenta la duración, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'date_added', ‘title’ y ‘duration’
+    movie2: informacion de la segunda pelicula que incluye su valor 'date_added', ‘title’ y ‘duration’
+    """
+    fecha1 = movie1["fecha_adicion"]
+    fecha1 = datetime.strptime(fecha1, "%Y-%m-%d")
+    fecha2 = movie2["fecha_adicion"]
+    fecha2 = datetime.strptime(fecha2, "%Y-%m-%d")
+
+    if fecha1 > fecha2:
+        return True
+    elif fecha1 == fecha2:
+        if movie1["title"] > movie2["title"]:
+            return True
+        elif movie1["duration"] > movie2["duration"]:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 def cmpMoviesByReleaseYear(movie1, movie2):
     """
     Devuelve verdadero (True) si el release_year de movie1 son menores que los

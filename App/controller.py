@@ -78,3 +78,8 @@ def listar_peliculas_estrenadas_en_un_periodo(control, lim_inf, lim_sup):
     peliculas = model.listar_peliculas_estrenadas_en_un_periodo(ss_catalog, lim_inf, lim_sup)
 
     return model.contentSize(peliculas), model.first_three_titles(peliculas), model.last_three_titles(peliculas)
+
+def listar_programas_agregados_en_un_periodo(control, fecha_inicial,fecha_final):
+    ss_catalog = control["model"]
+    programas = model.listar_programas_agregados_en_un_periodo(ss_catalog, fecha_inicial,fecha_final)
+    return model.contentSize(programas), model.first_three_titles(programas), model.last_three_titles(programas)

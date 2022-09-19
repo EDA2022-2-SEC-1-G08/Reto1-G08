@@ -20,6 +20,8 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 from email import header
+from sre_parse import expand_template
+from tokenize import tabsize
 from unittest import result
 from wsgiref import headers
 import config as cf
@@ -28,6 +30,7 @@ import controller
 from DISClib.ADT import list as lt
 from tabulate import tabulate
 assert cf
+from datetime import date, datetime
 
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
@@ -119,7 +122,7 @@ control = newController("ARRAY_LIST")
 dt = 2
 
 
-def printRegistrosRangoFechas(registros):
+def printPeliculasRangoFechas(registros):
     n_registros, primeros, ultimos = registros
     info = {"Tipo": [], "Año": [], "Nombre": [], "Duración": [], "Servicio": [], "Director": [], "Actores": []}
     if lt.size(primeros):
@@ -145,7 +148,34 @@ def printRegistrosRangoFechas(registros):
         print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=30))
     else:
         print("No se encontraron registro en el rango de fechas indicado")
-
+def printProgramasTVRangoFechas(programas):
+    n_registros, primeros, ultimos = programas
+    info = {"Tipo": [], "Nombre": [], "Fecha de Adición": [], "Duración": [], "Año": [], "Servicio": [], "Director": [], "Actores": []}
+    if lt.size(primeros):
+        print("Número de películas encontrados que cumplen la condición: ", n_registros)
+        print("Tabla de los primeros 3 y ultimos 3 registros encontrados entre las fechas indicadas")
+        for registro in lt.iterator(primeros):
+            info["Nombre"].append(registro["title"])
+            info["Fecha de Adición"].append(registro["fecha_adicion"])
+            info["Año"].append(registro["release_year"])
+            info["Tipo"].append(registro["type"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+        for registro in lt.iterator(ultimos):
+            info["Nombre"].append(registro["title"])
+            info["Fecha de Adición"].append(registro["fecha_adicion"])
+            info["Año"].append(registro["release_year"])
+            info["Tipo"].append(registro["type"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+        titulos = ["Tipo", "Nombre", "Fecha de Adición", "Duración", "Año", "Plataforma", "Director", "Actores"]
+        print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=30))
+    else:
+        print("No se encontraron registro en el rango de fechas indicado")
 """
 Menu principal
 """
@@ -170,7 +200,7 @@ while True:
                                      ("Hulu", hulu),
                                      ("Netflix",netflix)]
         rslt = {"Servicio": [], "N-Registros": [] }
-        f_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
+        f_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": [], "Fecha": []}
         l_three = {"Servicio": [], "Nombre": [], "Año": [], "Duracion": [], "Clasificacion": []}
         for servicios in nombre_servicios_streaming:
             name_servicio, inf_servicio = servicios
@@ -188,6 +218,7 @@ while True:
                 f_three["Año"].append(año_publicacion)
                 f_three["Duracion"].append(duracion)
                 f_three["Clasificacion"].append(clasificacion)
+                f_three["Fecha"].append(str(titles["fecha_adicion"]))
             
             for titles in lt.iterator(last_three):
                 name = str(titles["title"])
@@ -201,7 +232,7 @@ while True:
                 l_three["Duracion"].append(duracion)
                 l_three["Clasificacion"].append(clasificacion)
 
-        header_titles = ["Servicio", "Titulo", "Año de Lanzamiento", "Duración", "Clasificación"]
+        header_titles = ["Servicio", "Titulo", "Año de Lanzamiento", "Duración", "Clasificación", "F"]
         print(tabulate(rslt, headers=["Servicio", "No. de registros cargados"]))
         print("\nPrimeros 3 registros\n")
         print(tabulate(f_three, headers=header_titles, tablefmt="grid"))
@@ -210,18 +241,21 @@ while True:
         
     
     elif int(inputs[0]) == 2:
-        lim_inf= int(input("introduzca el limite inferior para el que quiere buscar las peliculas: "))
-        lim_sup= int(input("introduzca el limite superior para el que quiere buscar las peliculas: "))
+        lim_inf= int(input("Introduzca el limite inferior para el que quiere buscar las peliculas: "))
+        lim_sup= int(input("Introduzca el limite superior para el que quiere buscar las peliculas: "))
         print("Buscando ....")
         peliculas = controller.listar_peliculas_estrenadas_en_un_periodo(control, lim_inf, lim_sup)
-        printRegistrosRangoFechas(peliculas)
+        printPeliculasRangoFechas(peliculas)
 
     elif int(inputs[0]) == 3:
-        fecha_inicial= input("introduzca la fecha inicial, con formato: %B %d, %Y : ")
-        fecha_final= input("introduzca la fecha final, con formato: %B %d, %Y : ")
+        fecha_inicial= input("Introduzca la fecha inicial, con formato: %B %d, %Y : ")
+        fecha_final= input("Introduzca la fecha final, con formato: %B %d, %Y : ")
+        #print(datetime.strptime(fecha_inicial, "%B %d, %Y"))
+        #print(datetime.strptime(fecha_final, "%Y-%m-%d"))
+        #print(datetime.strptime(fecha_inicial, "%B %d, %Y")>datetime.strptime(fecha_final, "%Y-%m-%d"))
         print("Buscando....")
-    #    programas= controller.listar_programas_agregados en un periodo(fecha_inicial,fecha_final)
-    # print(programas)
+        programas = controller.listar_programas_agregados_en_un_periodo(control, fecha_inicial,fecha_final)
+        printProgramasTVRangoFechas(programas)
 
     elif int(inputs[0]) == 4:
         nombre_actor= input("introduzca el nombre del autor que desea consultar: ")
