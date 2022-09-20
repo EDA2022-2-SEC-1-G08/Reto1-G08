@@ -264,11 +264,21 @@ def get_top_n_actores(catalog, top):
     return actores
 
 def first_three_titles(ss_name_catalog):
-    titles = lt.subList(ss_name_catalog, 1, 3)
+    if lt.size(ss_name_catalog) < 3:
+        titles = lt.subList(ss_name_catalog, 1, lt.size(ss_name_catalog))
+    else:    
+        titles = lt.subList(ss_name_catalog, 1, 3)
     return titles
 
 def last_three_titles(ss_name_catalog):
-    titles = lt.subList(ss_name_catalog, lt.size(ss_name_catalog)-3, 3)
+    size = lt.size(ss_name_catalog)
+    if size < 3:
+        titles = lt.subList(ss_name_catalog, 1, size)
+        
+    else:    
+        titles = lt.subList(ss_name_catalog, size-3, 3)
+        
+    return titles
     return titles
 
 # Funciones utilizadas para comparar elementos dentro de una lista
