@@ -88,3 +88,8 @@ def encontrar_contenido_x_genero(control, genero):
     ss_catalog = control["model"]
     programas_genero_x, n_peliculas, n_programas = model.encontrar_contenido_x_genero(ss_catalog, genero)
     return model.contentSize(programas_genero_x), n_peliculas, n_programas, model.first_three_titles(programas_genero_x), model.last_three_titles(programas_genero_x)
+
+def top_n_actores_con_mas_participaciones(control, top):
+    ss_catalog = control["model"]
+    actores = model.top_n_actores_con_mas_participaciones(ss_catalog, top)
+    return actores

@@ -220,6 +220,39 @@ def printContenidoPorGenero(contenido_genero):
         print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
     else:
         print("No se encontraron registro en el rango de fechas indicado")
+
+def printTopActoresMayorParticipaciones(actores, top):
+    por_genero = {"Actor": [], "Participaciones": [], "MayorGenero": []}
+    por_tipo = {"Actor": [], "Plataformas": []}
+    compas = {"Actor": [], "Colaboraciones": []}
+    
+    print("El Top ", top, "Actores con más participaciones es...")
+    for registro in lt.iterator(actores):
+        plataforma = {"plataforma": [], "type":[], "veces": []}
+        por_genero["Actor"].append(registro["nombre"])
+        por_tipo["Actor"].append(registro["nombre"])
+        compas["Actor"].append(registro["nombre"])
+        otro = 2
+        for plt in registro["n_participaciones_x_plataforma"]:
+            if plt in plataforma["plataforma"]:
+                plataforma["plataforma"].append(" ")
+            elif otro:
+                plataforma["plataforma"].append(plt)
+                
+            for type in registro["n_participaciones_x_plataforma"][plt]:
+                plataforma["type"].append(type)
+                plataforma["veces"].append((registro["n_participaciones_x_plataforma"][plt][type]))
+        
+        por_genero["Participaciones"].append(registro["n_participaciones"])
+        generos = registro["n_generos"]
+        mayor_genero = max(generos, key=generos.get)
+        por_genero["MayorGenero"].append(mayor_genero)
+        por_tipo["Plataformas"].append(tabulate(plataforma, tablefmt="plain"))
+        compas["Colaboraciones"].append(", ".join(registro["actores"]))
+    print(tabulate(plataforma))
+    print(tabulate(por_genero, headers=["Actor", "Número de Participaciones", "Genero en el que más participó"], tablefmt="grid", maxcolwidths=30))
+    print(tabulate(por_tipo, headers=["Actor", "Participaciones por plataforma"], tablefmt="grid", maxcolwidths=30, showindex=[x for x in range(1, int(top)+1)]))
+    print(tabulate(compas, headers=["Actor", "Compañeros"], tablefmt="grid", maxcolwidths=30))
 """
 Menu principal
 """
@@ -334,8 +367,10 @@ while True:
     # print(top_n_generos)
 
     elif int(inputs) == 8:
-        n= int(input("introduzca el n top de actores que desea consultar"))
+        top= int(input("Introduzca el N top de actores que desea consultar "))
         print("Buscando ....")
+        actores = controller.top_n_actores_con_mas_participaciones(control, top)
+        printTopActoresMayorParticipaciones(actores, top)
 
     elif int(inputs) == 9:
         print("Eliga el algoritmo de ordenamiento")

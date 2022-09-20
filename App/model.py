@@ -79,8 +79,89 @@ def addTitle(ss_catalog, ss_name, title_inf, empresa, ordenar):
 
     return ss_catalog
 
+def addActor(ss_catalog, nombre, director, type, actores, generos, empresa, existente):
+    if not existente:
+        actor = {}
+        actor["nombre"] = nombre
+        actor["directores"] = []
+        actor["n_participaciones"] = 1
+        actor["n_participaciones_x_plataforma"] = {empresa : {type: 1},}
+        actor["actores"] = []
+        actor["n_generos"] = {}
+        for compa in actores:
+            if compa != "":
+                actor["actores"].append(compa)
+        for genero in generos:
+            actor["n_generos"][genero] = 1
+        lt.addLast(ss_catalog, actor)
+        if director != "":
+            actor["directores"].append(director)
+    else:
+        for registro in lt.iterator(ss_catalog):
+            if registro["nombre"] == nombre:
+                registro["n_participaciones"] += 1
+                if not(director in registro["directores"]) and director != "":
+                    registro["directores"].append(director)
+                for compa in actores:
+                    if not(compa in actores) and compa != "":
+                        actor["actores"].append(compa)
+                for genero in generos:
+                    if genero in registro["n_generos"]:
+                        registro["n_generos"][genero] += 1
+                    else:
+                        registro["n_generos"][genero] = 1
+                
+                if empresa in registro["n_participaciones_x_plataforma"]:
+                    if type in registro["n_participaciones_x_plataforma"][empresa]:
+                        if type != "":
+                            registro["n_participaciones_x_plataforma"][empresa][type] += 1
+                    else:
+                        if type != "":
+                            registro["n_participaciones_x_plataforma"][empresa][type] = 1
+                else:
+                    registro["n_participaciones_x_plataforma"][empresa] = {}
+                    registro["n_participaciones_x_plataforma"][empresa][type] = 1
+    return ss_catalog
+# 
+
 # Funciones para creacion de datos
 # Funciones de consulta
+def top_n_actores_con_mas_participaciones(catalog, top):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+    actores = lt.newList("ARRAY_LIST")
+    cont_movies = 0
+    cont_TV = 0
+    aux_actores = []
+    
+    for servicio in empresas:
+        for i in range(contentSize(servicio)):
+            registro = lt.getElement(servicio, i)
+            cast = registro["cast"].split(", ")
+            director = registro["director"]
+            type = registro["type"]
+            generos = registro["genero"].split(sep=", ")
+            empresa = registro["empresa"]
+            for actor in cast:
+                if actor in aux_actores:
+                    existente = True
+                else:
+                    existente = False
+                    aux_actores.append(actor)
+                if actor != "":
+                    addActor(actores, actor, director, type, cast, generos, empresa, existente)
+    sm.sort(actores, cmpActores)
+    actores = lt.subList(actores, 0, 20)
+    for i in lt.iterator(actores):
+        print(i["nombre"],i["directores"])
+    #print(aux_actores)
+
+    #sm.sort(actores, cmpContentByTitle)
+    return get_top_n_actores(actores, top)
+
 def encontrar_contenido_x_genero(catalog, genero):
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]
@@ -151,6 +232,10 @@ def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
 def contentSize(ss_name_catalog):
     return lt.size(ss_name_catalog)
 
+def get_top_n_actores(catalog, top):
+    actores = lt.subList(catalog, 2, int(top))
+    return actores
+
 def first_three_titles(ss_name_catalog):
     titles = lt.subList(ss_name_catalog, 1, 3)
     return titles
@@ -160,6 +245,17 @@ def last_three_titles(ss_name_catalog):
     return titles
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def cmpActores(actor1, actor2):
+    if actor1["n_participaciones"] > actor2["n_participaciones"]:
+        return True
+    elif actor1["n_participaciones"] == actor2["n_participaciones"]:
+        if actor1["nombre"] < actor2["nombre"]:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 def comparecontents(content1, content):
     if content1.lower() == content['name'].lower():
         return 0
