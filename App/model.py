@@ -108,6 +108,33 @@ def encontrar_contenido_x_genero(catalog, genero):
     sm.sort(contenido, cmpContentByTitle)
     return contenido, cont_movies, cont_TV
 
+def encontrar_contenido_x_actor(catalog, actor):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+    contenido = lt.newList()
+    cont_movies = 0
+    cont_TV = 0
+    for servicio in empresas:
+        for i in range(contentSize(servicio)):
+            registro = lt.getElement(servicio, i)
+            type = registro["type"]
+            actores = registro["cast"]
+            actores = actores.split(sep=", ")
+            if type == "TV Show":
+                if actor in actores:
+                    lt.addLast(contenido, registro)
+                    cont_TV += 1
+            elif type == "Movie":
+                if actor in actores:
+                    lt.addLast(contenido, registro)
+                    cont_movies += 1
+
+    sm.sort(contenido, cmpContentByTitle)
+    return contenido, cont_movies, cont_TV
+
 def listar_programas_agregados_en_un_periodo(catalog, fecha_inicial,fecha_final):
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]

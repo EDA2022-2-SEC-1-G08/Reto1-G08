@@ -219,6 +219,50 @@ def printContenidoPorGenero(contenido_genero):
         print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
     else:
         print("No se encontraron registro en el rango de fechas indicado")
+
+def printContenidoPorActor(contenido_actor):
+    n_registros, n_peliculas, n_programas, primeros, ultimos = contenido_actor
+    info = {
+            "Nombre": [], 
+            "Año": [],
+            "Director": [],
+            "Servicio": [],
+            "Duración": [],
+            "Actores": [],
+            "País": [],
+            "Genero": [],
+            "Descripción": [] 
+            }
+    cantidad = {"Total": [n_registros], "N_Peliculas": [n_peliculas], "N_programas":[n_programas]}
+    print(tabulate(cantidad, headers=["Total de Registros", "Numero de Películas", "Número de Programas de TV"], tablefmt="grid"))
+    if lt.size(primeros):
+        print("Número de películas encontrados que cumplen la condición: ", n_registros)
+        print("Tabla de los primeros 3 y ultimos 3 registros encontrados entre las fechas indicadas")
+        for registro in lt.iterator(primeros):
+            info["Nombre"].append(registro["title"])
+            info["Descripción"].append(registro["descripcion"])
+            info["Año"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+        for registro in lt.iterator(ultimos):
+            info["Nombre"].append(registro["title"])
+            info["Descripción"].append(registro["descripcion"])
+            info["Año"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+        titulos = ["Nombre", "Año", "Director", "Plataforma", "Duración", "Actores", "País", "Genero", "Descripción"]
+        print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
+    else:
+        print("No se encontraron registro en los que participe el actor indicado")
+
 """
 Menu principal
 """
@@ -305,8 +349,8 @@ while True:
     elif int(inputs[0]) == 4:
         nombre_actor= input("introduzca el nombre del autor que desea consultar: ")
         print("Buscando ....")
-    #    contenido_actor= controller.encontrar_contenido_x_actor(nombre_actor)
-    #   print(contenido_actor)
+        contenido_actor= controller.encontrar_contenido_x_actor(control, nombre_actor)
+        printContenidoPorActor(contenido_actor)
 
     elif int(inputs[0]) == 5:
         genero= input("introduzca el genero que desea buscar: ")
