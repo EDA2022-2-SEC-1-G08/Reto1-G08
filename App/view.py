@@ -221,7 +221,6 @@ def printContenidoPorGenero(contenido_genero):
     else:
         print("No se encontraron registro en el rango de fechas indicado")
 
-<<<<<<< HEAD
 def printTopActoresMayorParticipaciones(actores, top):
     por_genero = {"Actor": [], "Participaciones": [], "MayorGenero": []}
     por_tipo = {"Actor": [], "Plataformas": []}
@@ -254,7 +253,6 @@ def printTopActoresMayorParticipaciones(actores, top):
     print(tabulate(por_genero, headers=["Actor", "Número de Participaciones", "Genero en el que más participó"], tablefmt="grid", maxcolwidths=30))
     print(tabulate(por_tipo, headers=["Actor", "Participaciones por plataforma"], tablefmt="grid", maxcolwidths=30, showindex=[x for x in range(1, int(top)+1)]))
     print(tabulate(compas, headers=["Actor", "Compañeros"], tablefmt="grid", maxcolwidths=30))
-=======
 def printContenidoPorActor(contenido_actor):
     n_registros, n_peliculas, n_programas, primeros, ultimos = contenido_actor
     info = {
@@ -298,7 +296,6 @@ def printContenidoPorActor(contenido_actor):
     else:
         print("No se encontraron registro en los que participe el actor indicado")
 
->>>>>>> 0b0939b75ebf443a4d87d820f6c4431f7fad44b1
 """
 Menu principal
 """
