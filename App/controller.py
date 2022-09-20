@@ -84,6 +84,11 @@ def listar_programas_agregados_en_un_periodo(control, fecha_inicial,fecha_final)
     programas = model.listar_programas_agregados_en_un_periodo(ss_catalog, fecha_inicial,fecha_final)
     return model.contentSize(programas), model.first_three_titles(programas), model.last_three_titles(programas)
 
+def encontrar_contenido_x_actor(control, actor):
+    ss_catalog = control["model"]
+    programas_actor_x, n_peliculas, n_programas = model.encontrar_contenido_x_actor(ss_catalog, actor)
+    return model.contentSize(programas_actor_x), n_peliculas, n_programas, model.first_three_titles(programas_actor_x), model.last_three_titles(programas_actor_x)
+
 def encontrar_contenido_x_genero(control, genero):
     ss_catalog = control["model"]
     programas_genero_x, n_peliculas, n_programas = model.encontrar_contenido_x_genero(ss_catalog, genero)
