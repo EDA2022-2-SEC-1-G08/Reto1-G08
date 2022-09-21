@@ -163,6 +163,7 @@ def top_n_actores_con_mas_participaciones(catalog, top):
     return get_top_n_actores(actores, top)
 
 def encontrar_contenido_x_genero(catalog, genero):
+    times = getTime()
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]
     hulu = catalog["hulu"]
@@ -187,6 +188,8 @@ def encontrar_contenido_x_genero(catalog, genero):
                     cont_movies += 1
 
     sm.sort(contenido, cmpContentByTitle)
+    timef = getTime()
+    print(deltaTime(times, timef))
     return contenido, cont_movies, cont_TV
 
 def encontrar_contenido_x_actor(catalog, actor):
@@ -217,6 +220,7 @@ def encontrar_contenido_x_actor(catalog, actor):
     return contenido, cont_movies, cont_TV
 
 def listar_programas_agregados_en_un_periodo(catalog, fecha_inicial,fecha_final):
+    times = getTime()
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]
     hulu = catalog["hulu"]
@@ -236,9 +240,12 @@ def listar_programas_agregados_en_un_periodo(catalog, fecha_inicial,fecha_final)
                     if fecha >= fecha_inicial and fecha <= fecha_final:
                         lt.addLast(peliculas, registro)
     sm.sort(peliculas, cmpProgramsByDateAdded)
+    timef = getTime()
+    print(deltaTime(times, timef))
     return peliculas
 
 def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
+    times = getTime()
     amazon = catalog["amazon_prime"]
     disney = catalog["disney_plus"]
     hulu = catalog["hulu"]
@@ -254,6 +261,8 @@ def listar_peliculas_estrenadas_en_un_periodo(catalog, lim_inf, lim_sup):
                 if year >= lim_inf and year <= lim_sup:
                     lt.addLast(peliculas, registro)
     sm.sort(peliculas, cmpMoviesByReleaseYear)
+    timef = getTime()
+    print(deltaTime(times, timef))
     return peliculas
 
 def contentSize(ss_name_catalog):
