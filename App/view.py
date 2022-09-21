@@ -253,6 +253,7 @@ def printTopActoresMayorParticipaciones(actores, top):
     print(tabulate(por_genero, headers=["Actor", "Número de Participaciones", "Genero en el que más participó"], tablefmt="grid", maxcolwidths=30))
     print(tabulate(por_tipo, headers=["Actor", "Participaciones por plataforma"], tablefmt="grid", maxcolwidths=30, showindex=[x for x in range(1, int(top)+1)]))
     print(tabulate(compas, headers=["Actor", "Compañeros"], tablefmt="grid", maxcolwidths=30))
+
 def printContenidoPorActor(contenido_actor):
     n_registros, n_peliculas, n_programas, primeros, ultimos = contenido_actor
     info = {
@@ -295,6 +296,53 @@ def printContenidoPorActor(contenido_actor):
         print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
     else:
         print("No se encontraron registro en los que participe el actor indicado")
+
+def printContenidoxPais(contenido_pais):
+    deltatime, num_prog, num_pel, primeros_3_contenidos, ultimos_3_contenidos = contenido_pais
+
+    #Imprimimos la tabla de la cantidad de contenido
+    info_num = {"Programas": [num_prog], "Películas": [num_pel]}
+    print(tabulate(info_num, headers=["Numero de Programas", "Numero de Películas"], tablefmt="grid"))
+
+    info = {
+            "Titulo": [], 
+            "Fecha de lanzamiento": [],
+            "Director": [],
+            "Servicio": [],
+            "Duración": [],
+            "Actores": [],
+            "País": [],
+            "Genero": [],
+            "Descripción": [] 
+            }
+    if lt.size(primeros_3_contenidos):
+        print("Tabla de los primeros 3 y ultimos 3 contenidos del país dado")
+        for registro in lt.iterator(primeros_3_contenidos):
+            info["Titulo"].append(registro["title"])
+            info["Fecha de lanzamiento"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+            info["Descripción"].append(registro["descripcion"])
+        for registro in lt.iterator(ultimos_3_contenidos):
+            info["Titulo"].append(registro["title"])
+            info["Descripción"].append(registro["descripcion"])
+            info["Fecha de lanzamiento"].append(registro["release_year"])
+            info["Servicio"].append(registro["empresa"])
+            info["Duración"].append(registro["duration"])
+            info["Director"].append(registro["director"])
+            info["Actores"].append(registro["cast"])
+            info["País"].append(registro["país"])
+            info["Genero"].append(registro["genero"])
+        titulos = ["Titulo", "Fecha de lanzamiento", "Director", "Plataforma", "Duración", "Actores", "País", "Genero", "Descripción"]
+        print(tabulate(info, headers=titulos, tablefmt="grid", maxcolwidths=20))
+    else:
+        print("No se encontraron contenidos hechos en el país dado")
+    
+    print("El requerimiento se demoró", deltatime)
 
 """
 Menu principal
@@ -394,8 +442,8 @@ while True:
     elif int(inputs) == 5:
         pais= input("introduzca el pais a consultar: ")
         print("Buscando ....")
-    #    contenido_pais= controller.contenido_x_pais(pais)
-    #   print(contenido_pais) 
+        contenido_pais = controller.contenido_x_pais(control, pais)
+        printContenidoxPais(contenido_pais)
 
     elif int(inputs) == 6:
         director= input("introduzca el director a consultar")

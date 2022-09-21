@@ -25,7 +25,7 @@
  """
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from turtle import title
 import config as cf
 import time
@@ -279,7 +279,43 @@ def last_three_titles(ss_name_catalog):
         titles = lt.subList(ss_name_catalog, size-3, 3)
         
     return titles
-    return titles
+
+def contenido_producido_en_pais(catalog, pais):
+    amazon = catalog["amazon_prime"]
+    disney = catalog["disney_plus"]
+    hulu = catalog["hulu"]
+    netflix = catalog["netflix"]
+    empresas = [amazon, disney, hulu, netflix]
+
+    #Ya que la lista está ordenada, podría solo cogerse los primeros 3 contenidos y los últimos 3 contenidos de cada servicio de streaming y hacer
+    #sort a todo eso y, del orden resultante, sacar los primeros 3 y los ultimos 3.
+
+    cont_prod_pais_every_serv = lt.newList("ARRAY_LIST") #Creamos la lista que tendrá todos los contenidos del país dado
+    num_prog = 0
+    num_pel = 0
+    start_time = getTime()
+    #Se rellena la lista
+    for servicios in empresas:
+        for contenido in lt.iterator(servicios):
+            if contenido["país"] == pais:
+                #Se agrega a la sublista mencionada el contenido si es del país
+                lt.addLast(cont_prod_pais_every_serv, contenido)
+                #Se cuentan los programas y las peliculas:
+                if contenido["type"] == "TV Show":
+                    num_prog+=1
+                else:
+                    num_pel+=1
+
+    #Se ordena la lista
+    sm.sort(cont_prod_pais_every_serv, cmpContentByTitle)
+    
+    primeros_3_contenidos = first_three_titles(cont_prod_pais_every_serv)
+    ultimos_3_contenidos = last_three_titles(cont_prod_pais_every_serv)
+    end_time = getTime()
+    deltatime = deltaTime(start_time, end_time)
+
+    return deltatime, num_prog, num_pel, primeros_3_contenidos, ultimos_3_contenidos
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def cmpActores(actor1, actor2):
@@ -436,3 +472,6 @@ def sortTitles(catalog, sort):
 
 def getTime():
     return float(time.perf_counter()*1000)
+def deltaTime(star, end):
+    elapsed = float(end - star)
+    return elapsed

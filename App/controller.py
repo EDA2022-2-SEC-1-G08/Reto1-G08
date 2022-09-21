@@ -98,3 +98,8 @@ def top_n_actores_con_mas_participaciones(control, top):
     ss_catalog = control["model"]
     actores = model.top_n_actores_con_mas_participaciones(ss_catalog, top)
     return actores
+
+def contenido_x_pais(control, pais):
+    ss_catalog = control["model"]
+    contenido_producido_x_pais = model.contenido_producido_en_pais(ss_catalog, pais)
+    return contenido_producido_x_pais
