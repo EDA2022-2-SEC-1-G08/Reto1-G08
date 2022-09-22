@@ -346,7 +346,10 @@ def printContenidoxPais(contenido_pais):
 
 def printTopNGeneros(TopNGeneros):
     top_n_numbers, top_n_names, chopped_info_per_ss = TopNGeneros
+    n = lt.size(top_n_names)
 
+    
+    print("TOP", n, "de los géneros con el mayor número de contenido")
     #Pintamos la tabla de conteos generales
     info_generos_counts = { "Generos": [top_n_names], "Conteo": [top_n_numbers]}
     print(tabulate(info_generos_counts, headers=["Generos", "Numero de Contenido"], tablefmt="grid"))
@@ -373,6 +376,8 @@ def printTopNGeneros(TopNGeneros):
         col_num_prog_pel_per_genre.append(text)
     
     #Columna Streaming Services (A mostrar: El nombre de la plataforma, y su respectivo conteo de contenido [sin importar el tipo])
+    # ---> Es claro que estamos haciendo el mismo recorrido que en el anterior loop, pero no lo unimos para mantener el código mucho más ordenado
+    #      Ya que no afecta demasiado en el orden de crecimiento.
     col_num_per_streaming_service = []
     for nombre_generos in top_n_names:
         chopped_text = []
