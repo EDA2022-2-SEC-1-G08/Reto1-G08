@@ -106,4 +106,4 @@ def contenido_x_pais(control, pais):
 
 def top_n_generos(control, n):
     ss_catalog = control["model"]
-    return model.top_n_generos(ss_catalog, 2)
+    return model.top_n_generos(ss_catalog, n)
