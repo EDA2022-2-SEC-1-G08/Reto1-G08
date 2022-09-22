@@ -346,18 +346,18 @@ def printContenidoxPais(contenido_pais):
 
 def printTopNGeneros(TopNGeneros):
     top_n_numbers, top_n_names, chopped_info_per_ss = TopNGeneros
-    n = lt.size(top_n_names)
+    n = len(top_n_names)
 
     
     print("TOP", n, "de los géneros con el mayor número de contenido")
     #Pintamos la tabla de conteos generales
-    info_generos_counts = { "Generos": [top_n_names], "Conteo": [top_n_numbers]}
+    info_generos_counts = { "Generos": top_n_names, "Conteo": top_n_numbers}
     print(tabulate(info_generos_counts, headers=["Generos", "Numero de Contenido"], tablefmt="grid"))
 
     #Hacemos la columna de los rankings
     col_num_rank = []
     i=1
-    n = lt.size(top_n_names)
+    n = len(top_n_names)
     while i<= n:
         col_num_rank.append(i)
         i+=1
@@ -365,29 +365,28 @@ def printTopNGeneros(TopNGeneros):
     #Columna INDEX --> top_n_names
     #Columna count
     col_num_prog_pel_per_genre = []
+    col_num_per_streaming_service = []
     for nombre_generos in top_n_names:
+        chopped_text = []
         num_prog = 0
         num_pel = 0
         for s_streaming in chopped_info_per_ss:
             Generos_per_ss = chopped_info_per_ss[s_streaming]
-            num_prog+= Generos_per_ss[nombre_generos][0]
-            num_pel+= Generos_per_ss[nombre_generos][1]
+            if Generos_per_ss.get(nombre_generos, 0) != 0:
+                num_prog+= Generos_per_ss[nombre_generos][0]
+                num_pel+= Generos_per_ss[nombre_generos][1]
+                num_cont_per_ss = Generos_per_ss[nombre_generos][0] + Generos_per_ss[nombre_generos][1]
+                subtext = s_streaming+": "+str(num_cont_per_ss)
+                chopped_text.append(subtext)
         text = "Programas: "+str(num_prog)+"\n Peliculas: "+str(num_pel)
         col_num_prog_pel_per_genre.append(text)
+        joined_text = "\n".join(chopped_text)
+        col_num_per_streaming_service.append(joined_text)
     
     #Columna Streaming Services (A mostrar: El nombre de la plataforma, y su respectivo conteo de contenido [sin importar el tipo])
     # ---> Es claro que estamos haciendo el mismo recorrido que en el anterior loop, pero no lo unimos para mantener el código mucho más ordenado
     #      Ya que no afecta demasiado en el orden de crecimiento.
-    col_num_per_streaming_service = []
-    for nombre_generos in top_n_names:
-        chopped_text = []
-        for s_streaming in chopped_info_per_ss:
-            Generos_per_ss = chopped_info_per_ss[s_streaming]
-            num_cont_per_ss = Generos_per_ss[nombre_generos][0] + Generos_per_ss[nombre_generos][1]
-            subtext = s_streaming+": "+str(num_cont_per_ss)
-            chopped_text.append(subtext)
-        joined_text = "\n".join(chopped_text)
-        col_num_per_streaming_service.append(joined_text)
+    
     
     columnas = {
         "Numeros ranking": col_num_rank,

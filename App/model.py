@@ -348,29 +348,16 @@ def  top_n_generos(catalog, n):
         chopped_info_per_ss[nombre_servicios] = generos_info_ss #Guardamos la info recolectada de cada uno de los servicios de streaming
     
     #2. BUSCAMOS LOS NOMBRES DE LOS GENEROS EN EL TOP N
-    General_dict_values = lt.newList("ARRAY_LIST") #Creamos una lista que tendrá los valores de todas las llaves del diccionario general
-    for nombre_genero in generos_info:
-        lt.addLast(General_dict_values, generos_info[nombre_genero]) #Llenamos la lista
-    sm.sort(General_dict_values, cmpRankingN) #Ordenamos la lista de mayor a menor (No funciona la funcion cmp)
-    print(General_dict_values) 
-    top_n_numbers = lt.subList(General_dict_values, 1, n) #Creamos una lista con los N mayores contenidos
-
-    i = 1
-    top_n_names = lt.newList("ARRAY_LIST") #Ya que solo tenemos los valores, toca ahora matchear esos numeros con las llaves. 
-                                        #Este diccionario contendrá los nombres de las llaves.
-    while i<=n:
-        for nombre_genero in generos_info:
-            if generos_info[nombre_genero] == lt.getElement(top_n_numbers, i): # - Si coincide el numero con el valor de la llave
-                if i==1:                                        
-                    lt.addLast(top_n_names, nombre_genero) 
-                    break
-                elif lt.getElement(top_n_numbers, i-1) == nombre_genero: # -- Si resulta que hay numeros repetidos
-                    pass                                                 # -- Nos aseguramos de que no se guarde el mismo nombre
-                else:
-                    lt.addLast(top_n_names, nombre_genero)                      # - Agregamos el nombre a top_n_names
-                    break
-        i+=1
-    
+    top_n_names = []
+    top_n_numbers = []
+    print(n)
+    for i in range(0, n):
+        name_n_mayor = max(generos_info, key=generos_info.get)
+        top_n_names.append(name_n_mayor)
+        top_n_numbers.append(generos_info[name_n_mayor])
+        del generos_info[name_n_mayor]
+    #print(chopped_info_per_ss)
+    print(top_n_names)
     #Con los diccionarios y los nombres a buscar, solo queda que en la vista se decida mostrar los que son.
     return top_n_numbers, top_n_names, chopped_info_per_ss
 
@@ -391,13 +378,6 @@ def comparecontents(content1, content):
     if content1.lower() == content['name'].lower():
         return 0
     elif content1.lower() > content1['name'].lower():
-        return 1
-    return -1
-
-def cmpRankingN(num1, num2):
-    if num1 == num2:
-        return 0
-    elif num1 > num2:
         return 1
     return -1
 
