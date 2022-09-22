@@ -103,3 +103,7 @@ def contenido_x_pais(control, pais):
     ss_catalog = control["model"]
     contenido_producido_x_pais = model.contenido_producido_en_pais(ss_catalog, pais)
     return contenido_producido_x_pais
+
+def top_n_generos(control, n):
+    ss_catalog = control["model"]
+    return model.top_n_generos(ss_catalog, 2)

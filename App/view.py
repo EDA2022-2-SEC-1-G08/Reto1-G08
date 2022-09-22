@@ -344,6 +344,59 @@ def printContenidoxPais(contenido_pais):
     
     print("El requerimiento se demoró", deltatime)
 
+def printTopNGeneros(TopNGeneros):
+    top_n_numbers, top_n_names, chopped_info_per_ss = TopNGeneros
+
+    #Pintamos la tabla de conteos generales
+    info_generos_counts = { "Generos": [top_n_names], "Conteo": [top_n_numbers]}
+    print(tabulate(info_generos_counts, headers=["Generos", "Numero de Contenido"], tablefmt="grid"))
+
+    #Hacemos la columna de los rankings
+    col_num_rank = []
+    i=1
+    n = lt.size(top_n_names)
+    while i<= n:
+        col_num_rank.append(i)
+        i+=1
+    
+    #Columna INDEX --> top_n_names
+    #Columna count
+    col_num_prog_pel_per_genre = []
+    for nombre_generos in top_n_names:
+        num_prog = 0
+        num_pel = 0
+        for s_streaming in chopped_info_per_ss:
+            Generos_per_ss = chopped_info_per_ss[s_streaming]
+            num_prog+= Generos_per_ss[nombre_generos][0]
+            num_pel+= Generos_per_ss[nombre_generos][1]
+        text = "Programas: "+str(num_prog)+"\n Peliculas: "+str(num_pel)
+        col_num_prog_pel_per_genre.append(text)
+    
+    #Columna Streaming Services (A mostrar: El nombre de la plataforma, y su respectivo conteo de contenido [sin importar el tipo])
+    col_num_per_streaming_service = []
+    for nombre_generos in top_n_names:
+        chopped_text = []
+        for s_streaming in chopped_info_per_ss:
+            Generos_per_ss = chopped_info_per_ss[s_streaming]
+            num_cont_per_ss = Generos_per_ss[nombre_generos][0] + Generos_per_ss[nombre_generos][1]
+            subtext = s_streaming+": "+str(num_cont_per_ss)
+            chopped_text.append(subtext)
+        joined_text = "\n".join(chopped_text)
+        col_num_per_streaming_service.append(joined_text)
+    
+    columnas = {
+        "Numeros ranking": col_num_rank,
+        "Nombre_generos": top_n_names,
+        "Count total": top_n_numbers,
+        "Columna Count Peliculas y Programas": col_num_prog_pel_per_genre,
+        "Columna Streaming Services": col_num_per_streaming_service
+    }
+
+    titulos = ["Rank", "Género", "Numero de Contenido", "Numero de Contenido según Tipo", "Servicios de Streaming"]
+    print(tabulate(columnas, headers=titulos, tablefmt="grid", maxcolwidths=20))
+    
+
+
 """
 Menu principal
 """
@@ -452,10 +505,10 @@ while True:
     # print(contenido_x_director)1
 
     elif int(inputs) == 7:
-        n= int(input("ingrese el numero n de top generos que quiere buscar"))
+        n= int(input("ingrese el numero n de top generos que quiere buscar: "))
         print("Buscando ....")
-    #    top_n_generos= controller.top_n_generos(n)
-    # print(top_n_generos)
+        top_n_generos= controller.top_n_generos(control, n)
+        printTopNGeneros(top_n_generos)
 
     elif int(inputs) == 8:
         top= int(input("Introduzca el N top de actores que desea consultar "))

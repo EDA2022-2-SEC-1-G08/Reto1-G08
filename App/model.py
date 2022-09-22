@@ -325,6 +325,55 @@ def contenido_producido_en_pais(catalog, pais):
 
     return deltatime, num_prog, num_pel, primeros_3_contenidos, ultimos_3_contenidos
 
+def  top_n_generos(catalog, n):
+
+    #1. CREAMOS UNA ESTRUCTURA DE ALMACENAMIENTO CON LA INFORMACION DE TODOS LOS GENEROS ENCONTRADOS:
+
+    generos_info = {} #Diccionario General
+    chopped_info_per_ss = {}
+    for nombre_servicios in catalog:
+        generos_info_ss = {} #Subdiccionario con la información de una plataforma en específico. 
+        #Estructura = {Nombre genero (str): [Numero de programas de dicho género (int), Numero de películas de dicho género(int), ...]
+        for contenido in lt.iterator(catalog[nombre_servicios]):
+            generos_contenido = contenido["genero"].split(", ")
+            type = 1 #Type = 1 --> Pelicula, Type = 0 --> Programa
+            if contenido["type"] == "TV Show":
+                type = 0
+            for genero in generos_contenido:
+                if generos_info_ss.get(genero, 0) == 0:
+                    generos_info_ss[genero] = [0, 0]
+                generos_info_ss[genero][type] = generos_info_ss[genero][type]+1 #Actualizamos la información del subdiccionario
+                generos_info[genero] = generos_info.get(genero, 0)+1 #Actualizamos la información del diccionario general
+            
+        chopped_info_per_ss[nombre_servicios] = generos_info_ss #Guardamos la info recolectada de cada uno de los servicios de streaming
+    
+    #2. BUSCAMOS LOS NOMBRES DE LOS GENEROS EN EL TOP N
+    General_dict_values = lt.newList("ARRAY_LIST") #Creamos una lista que tendrá los valores de todas las llaves del diccionario general
+    for nombre_genero in generos_info:
+        lt.addLast(General_dict_values, generos_info[nombre_genero]) #Llenamos la lista
+    sm.sort(General_dict_values, cmpRankingN) #Ordenamos la lista de mayor a menor (No funciona la funcion cmp)
+    print(General_dict_values) 
+    top_n_numbers = lt.subList(General_dict_values, 1, n) #Creamos una lista con los N mayores contenidos
+
+    i = 1
+    top_n_names = lt.newList("ARRAY_LIST") #Ya que solo tenemos los valores, toca ahora matchear esos numeros con las llaves. 
+                                        #Este diccionario contendrá los nombres de las llaves.
+    while i<=n:
+        for nombre_genero in generos_info:
+            if generos_info[nombre_genero] == lt.getElement(top_n_numbers, i): # - Si coincide el numero con el valor de la llave
+                if i==1:                                        
+                    lt.addLast(top_n_names, nombre_genero) 
+                    break
+                elif lt.getElement(top_n_numbers, i-1) == nombre_genero: # -- Si resulta que hay numeros repetidos
+                    pass                                                 # -- Nos aseguramos de que no se guarde el mismo nombre
+                else:
+                    lt.addLast(top_n_names, nombre_genero)                      # - Agregamos el nombre a top_n_names
+                    break
+        i+=1
+    
+    #Con los diccionarios y los nombres a buscar, solo queda que en la vista se decida mostrar los que son.
+    return top_n_numbers, top_n_names, chopped_info_per_ss
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def cmpActores(actor1, actor2):
@@ -345,7 +394,16 @@ def comparecontents(content1, content):
         return 1
     return -1
 
+def cmpRankingN(num1, num2):
+    if num1 == num2:
+        return 0
+    elif num1 > num2:
+        return 1
+    return -1
+
 # Funciones de comparación
+
+
 def cmpContentByTitle(content1, content2):
     """
     Devuelve verdadero (True) si el title de movie1 es menor que los
