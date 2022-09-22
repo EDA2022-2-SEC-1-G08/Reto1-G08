@@ -340,13 +340,13 @@ def  top_n_generos(catalog, n):
             if contenido["type"] == "TV Show":
                 type = 0
             for genero in generos_contenido:
-                if generos_info_ss.get(genero, 0) == 0:
+                if existe(generos_info_ss, genero) == False:
                     generos_info_ss[genero] = [0, 0]
+                else:
+                    genero = existe(generos_info_ss, genero)
                 generos_info_ss[genero][type] = generos_info_ss[genero][type]+1 #Actualizamos la información del subdiccionario
-                generos_info[genero] = generos_info.get(genero, 0)+1 #Actualizamos la información del diccionario general
-            
+                generos_info[genero] = generos_info.get(genero, 0)+1 #Actualizamos la información del diccionario general   
         chopped_info_per_ss[nombre_servicios] = generos_info_ss #Guardamos la info recolectada de cada uno de los servicios de streaming
-    
     #2. BUSCAMOS LOS NOMBRES DE LOS GENEROS EN EL TOP N
     top_n_names = []
     top_n_numbers = []
@@ -360,6 +360,16 @@ def  top_n_generos(catalog, n):
     print(top_n_names)
     #Con los diccionarios y los nombres a buscar, solo queda que en la vista se decida mostrar los que son.
     return top_n_numbers, top_n_names, chopped_info_per_ss
+
+def existe(diccionario, nombre_genero):
+    resp = False
+    for generos_existentes in diccionario:
+        comparable_string_gen_exist = generos_existentes.lower().strip()
+        comparable_string_nom_gen = nombre_genero.lower().strip()
+        if ((comparable_string_gen_exist.find(comparable_string_nom_gen) != -1) or (comparable_string_nom_gen.find(comparable_string_gen_exist)!= -1))==True:
+            resp = generos_existentes
+            break
+    return resp
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
